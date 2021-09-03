@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/api/annotations.proto";
+// new add
+import "validator/validator.proto";
+
+option go_package = "github.com/rcrick/grpc-gateway/proto";
+
+service HelloService {
+    rpc SayHello(HelloRequest) returns (HelloReply) {
+        // new add
+        option (google.api.http) = {
+            post: "/v1/hello"
+            body: "*"
+        };
+    }
+}
+// new add
+message HelloRequest {
+    int32 number =1 [(validator.field) = {int_gt: 0, int_lt: 100}];
+    string name = 2 [(validator.field) = {length_gt: 10}];
+}
+
+message HelloReply {
+    string message = 1;
+}
